@@ -1,7 +1,16 @@
 package com.cats.service;
 
-/**
- * Created by Me on 26.02.2017.
- */
-public class CatService {
+
+import com.cats.entity.Cat;
+
+import java.util.List;
+
+public interface CatService
+{
+
+    List<Cat> getAll();
+    Cat getByID(long id);
+    Cat save(Cat remind);
+    void remove(long id);
+
 }

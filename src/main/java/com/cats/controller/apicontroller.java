@@ -1,19 +1,44 @@
 package com.cats.controller;
 
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
 
-@Controller
-@RequestMapping("/api")
+import com.cats.entity.Cat;
+import com.cats.service.CatService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RestController
 public class apicontroller {
-    @RequestMapping(value ="/get", method = RequestMethod.GET)
+
+    @Autowired
+    private CatService service;
+
+    @RequestMapping(value = "/cats/all", method = RequestMethod.GET)
     @ResponseBody
-    public String getCol(ModelMap model)
-    {
-        return "itWorks";
+    public List<Cat> getAllCats() {
+        return service.getAll();
+    }
+
+    @RequestMapping(value = "/cats/one/id={id}", method = RequestMethod.GET)
+    @ResponseBody
+    public Cat getCat(@PathVariable("id") long catID) {
+        return service.getByID(catID);
+    }
+
+    @RequestMapping(value = "/cats/save", method = RequestMethod.POST)
+    @ResponseBody
+    public Cat saveCat(@RequestBody Cat cat) {
+
+        return service.save(cat);
+    }
+
+
+
+    @RequestMapping(value = "/cats/delete/{id}", method = RequestMethod.DELETE)
+    @ResponseBody
+    public void delete(@PathVariable long id) {
+        service.remove(id);
     }
 
 }

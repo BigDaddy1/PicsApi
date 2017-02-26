@@ -10,7 +10,7 @@ public class Cat {
     @Id
 @GeneratedValue(generator = "increment")
 @GenericGenerator(name="increment", strategy="increment")
-private int id;
+private Long id;
     @Column(name="gender",nullable = false)
     private String gender;
 
@@ -20,12 +20,12 @@ private int id;
     @Column(name="age", nullable = false)
     private int age;
     public Cat()
-    {}
-    public int getId()
+     {}
+    public Long getId()
     {
         return  id;
     }
-    public void setId(int id)
+    public void setId(Long id)
     {
         this.id=id;
     }

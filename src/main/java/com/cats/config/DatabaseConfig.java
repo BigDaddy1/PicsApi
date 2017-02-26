@@ -27,55 +27,56 @@ import java.util.Properties;
 @PropertySource("classpath:db.properties")
 @ComponentScan("com.cats")
 public class DatabaseConfig {
-@Resource
-
+    @Resource
     private Environment env;
-@Bean
-public LocalContainerEntityManagerFactoryBean entityManagerFactory()
-{
-    LocalContainerEntityManagerFactoryBean em= new LocalContainerEntityManagerFactoryBean();
-    em.setDataSource(dataSource());
-    em.setPackagesToScan(env.getRequiredProperty("db.entity.package"));
-    em.setJpaVendorAdapter(new HibernateJpaVendorAdapter());
-    em.setJpaProperties(getHibernateProperties());
-    return em;
-}
-@Bean
-public DataSource dataSource()
-{
-    BasicDataSource ds = new BasicDataSource();
-    ds.setUrl(env.getRequiredProperty("db.url"));
-    ds.setDriverClassName(env.getRequiredProperty("db.driver"));
-    ds.setUsername(env.getRequiredProperty("db.username"));
-    ds.setPassword(env.getRequiredProperty("db.password"));
 
-    ds.setInitialSize(Integer.valueOf(env.getRequiredProperty("db.initialSize")));
-    ds.setMinIdle(Integer.valueOf(env.getRequiredProperty("db.minIdle")));
-    ds.setMaxIdle(Integer.valueOf(env.getRequiredProperty("db.maxIdle")));
-    ds.setTimeBetweenEvictionRunsMillis(Long.valueOf(env.getRequiredProperty("db.timeBetweenEvictionRunsMillis")));
-    ds.setMinEvictableIdleTimeMillis(Long.valueOf(env.getRequiredProperty("db.minEvictableIdleTimeMills")));
-    ds.setTestOnBorrow(Boolean.valueOf(env.getRequiredProperty("db.testOnBorrow")));
-    ds.setValidationQuery(env.getProperty("db.validationQuery"));
+    @Bean
+    public LocalContainerEntityManagerFactoryBean entityManagerFactory() {
+        LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
+        em.setDataSource(dataSource());
+        em.setPackagesToScan(env.getRequiredProperty("db.entity.package"));
+        em.setJpaVendorAdapter(new HibernateJpaVendorAdapter());
+        em.setJpaProperties(getHibernateProperties());
 
-    return ds;
-}
-@Bean
-public PlatformTransactionManager platformTransactionManager(){
-    JpaTransactionManager manager = new JpaTransactionManager();
-    manager.setEntityManagerFactory(entityManagerFactory().getObject());
-    return manager;
-}
-public Properties getHibernateProperties()
-{
-    try {
-        Properties properties= new Properties();
-    InputStream is = getClass().getClassLoader().getResourceAsStream("hibernate.properties");
-
-        properties.load(is);
-        return properties;
-    } catch (IOException e) {
-        throw new IllegalArgumentException("Can't find h.p file",e);
+        return em;
     }
 
-}
+    @Bean
+    public DataSource dataSource() {
+        BasicDataSource ds = new BasicDataSource();
+        ds.setUrl(env.getRequiredProperty("db.url"));
+        ds.setDriverClassName(env.getRequiredProperty("db.driver"));
+        ds.setUsername(env.getRequiredProperty("db.username"));
+        ds.setPassword(env.getRequiredProperty("db.password"));
+
+        ds.setInitialSize(Integer.valueOf(env.getRequiredProperty("db.initialSize")));
+        ds.setMinIdle(Integer.valueOf(env.getRequiredProperty("db.minIdle")));
+        ds.setMaxIdle(Integer.valueOf(env.getRequiredProperty("db.maxIdle")));
+        ds.setTimeBetweenEvictionRunsMillis(Long.valueOf(env.getRequiredProperty("db.timeBetweenEvictionRunsMillis")));
+        ds.setMinEvictableIdleTimeMillis(Long.valueOf(env.getRequiredProperty("db.minEvictableIdleTimeMillis")));
+        ds.setTestOnBorrow(Boolean.valueOf(env.getRequiredProperty("db.testOnBorrow")));
+        ds.setValidationQuery(env.getRequiredProperty("db.validationQuery"));
+
+        return ds;
+    }
+
+    @Bean
+    public PlatformTransactionManager transactionManager() {
+        JpaTransactionManager manager = new JpaTransactionManager();
+        manager.setEntityManagerFactory(entityManagerFactory().getObject());
+
+        return manager;
+    }
+
+    public Properties getHibernateProperties() {
+        try {
+            Properties properties = new Properties();
+            InputStream is = getClass().getClassLoader().getResourceAsStream("hibernate.properties");
+            properties.load(is);
+
+            return properties;
+        } catch (IOException e) {
+            throw new IllegalArgumentException("Can't find 'hibernate.properties' in classpath!", e);
+        }
+    }
 }

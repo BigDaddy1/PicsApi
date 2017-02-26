@@ -1,7 +1,8 @@
 package com.cats.repository;
 
-/**
- * Created by Me on 26.02.2017.
- */
-public interface CatRepository {
+
+import com.cats.entity.Cat;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface CatRepository extends JpaRepository<Cat, Long> {
 }
